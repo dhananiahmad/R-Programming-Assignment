@@ -1,0 +1,30 @@
+complete <- function(directory="specdata",id = 1:332){
+  
+  fileloc=paste("C:/D-Drive/Professional Development/Big Data/Coursera/Data Science Track/Intro to R Programming/Wk 2/",directory,sep="")
+  setwd(fileloc)
+  
+  dataall <- data.frame(id=numeric(0),nobs=numeric(0))
+  
+  count<-0
+      
+  for (i in id){
+    count<-count+1
+    
+    filenum<-sprintf("%03d",i)
+    
+    filename<-paste(filenum,".csv",sep="")
+    
+    temp_data<-read.csv(filename)
+    
+    var_id<-i
+    var_data_complete<-complete.cases(temp_data)
+    var_data_complete_count<-sum(var_data_complete)
+    
+    dataall[[count,1]]<-var_id
+    dataall[[count,2]]<-var_data_complete_count
+    
+        rm(temp_data)
+    }
+  
+  dataall
+}
