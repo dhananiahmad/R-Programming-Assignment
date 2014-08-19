@@ -1,0 +1,37 @@
+pollutantmean <- function(directory="specdata",pollutant="sulfate",id = 1:332){
+  fileloc=paste("C:/D-Drive/Professional Development/Big Data/Coursera/Data Science Track/Intro to R Programming/Wk 2/",directory,sep="")
+  
+  setwd(fileloc)
+  
+  
+  dataall<-read.csv("001.csv",nrow=1)
+  
+  for (i in id){
+    filenum<-sprintf("%03d",i)
+  
+    filename<-paste(filenum,".csv",sep="")
+  
+    temp_data<-read.csv(filename)
+  
+    dataall<-rbind(dataall,temp_data)
+    rm(temp_data)
+  }
+  
+  datamat<-as.matrix(dataall)
+  len<-nrow(datamat)
+  datafinal<-datamat[2:len,]
+        
+  if (pollutant=='nitrate') {
+    nitr<-datafinal[,3]
+    nitrnumeric<-as.numeric(nitr)
+    pollmean<-mean(nitrnumeric,na.rm=TRUE)
+    pollmean<-round(pollmean,3)
+    print(pollmean)
+    } else {
+    sulp<-datafinal[,2]
+    sulpnumeric<-as.numeric(sulp)
+    pollmean<-mean(sulpnumeric,na.rm=TRUE)
+    pollmean<-round(pollmean,3)
+    print(pollmean)
+  }
+}
