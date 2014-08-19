@@ -1,0 +1,60 @@
+rankall <- function(outcome,num="best") {
+  # Set Working Directory to where the data file is
+  setwd("C:/D-Drive/Professional Development/Big Data/Coursera/Data Science Track/Intro to R Programming/Wk 4/Data")
+  
+  # Check if the Outcomes is Valid
+  if (!outcome %in% c("heart attack", "heart failure", "pneumonia")) {
+    stop("invalid outcome")
+  }
+  
+  data <- read.csv("outcome-of-care-measures.csv", colClasses="character")
+  
+  
+  states <- data$State
+  states <- sort(unique(states))
+  
+  rankall<-data.frame(Hospital.Name=character(0),State=character(0),stringsAsFactors=FALSE)
+  
+  for (state in states){
+    
+    ##Subset the state data
+    datastate<-subset(data,State==state)
+    
+    if (outcome=="heart attack") {
+      dataoutcome=datastate[,c(2,7,11)]  
+    }
+    else if (outcome=="heart failure") {
+      dataoutcome=datastate[,c(2,7,17)]
+    }
+    else if (outcome=="pneumonia") {
+      dataoutcome=datastate[,c(2,7,23)]
+    }
+    
+    dataoutcome[,3]<-suppressWarnings(as.numeric(dataoutcome[,3]))
+    
+    dataoutcome<-subset(dataoutcome,!is.na(dataoutcome[3]))
+    
+    order<-order(dataoutcome[,3],dataoutcome[,1])
+    
+    if (num=="best"){
+      statehospital<-dataoutcome[order[1],c(1,2)]
+    }
+    else if(num=="worst"){
+      statehospital<-dataoutcome[order[length(order)],c(1,2)]
+    }
+    else if(as.numeric(num)<=length(order)){
+      statehospital<-dataoutcome[order[as.numeric(num)],c(1,2)]
+    }
+    else {
+      statehospital<-data.frame(Hospital.Name=character(0),State=character(0),stringsAsFactors=FALSE)
+      statehospital[1,]<-c(NA,state)
+    }  
+    
+    
+    rankall<-rbind(rankall,statehospital)
+          
+  }
+  colnames(rankall)<-c("hospital","state")
+  
+  rankall  
+}
